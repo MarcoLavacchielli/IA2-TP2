@@ -1751,7 +1751,11 @@ MonoBehaviour:
   - {fileID: 1892191134}
   - {fileID: 1924464310}
   - {fileID: 1398741317}
-  EnergyBarScript: {fileID: 38243017}
+  Player: {fileID: 0}
+  viewRadius: 0
+  viewAngle: 0
+  HunterTransform: {fileID: 996071150}
+  newradius: 3
 --- !u!65 &996071147
 BoxCollider:
   m_ObjectHideFlags: 0
