@@ -1754,6 +1754,7 @@ MonoBehaviour:
   Player: {fileID: 0}
   viewRadius: 0
   viewAngle: 0
+  EnergyBarScript: {fileID: 38243017}
   HunterTransform: {fileID: 996071150}
   newradius: 3
 --- !u!65 &996071147

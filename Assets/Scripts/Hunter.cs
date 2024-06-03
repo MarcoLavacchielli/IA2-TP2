@@ -20,7 +20,7 @@ public class Hunter : StateFather//=moveState
     [SerializeField] GameObject[] _arrayOfEnemies;
     [SerializeField] int _actualPrey;
     public Renderer _rend;
-    //public EnergyBar EnergyBarScript;
+    public EnergyBar EnergyBarScript;
 
     public Transform HunterTransform;
     public Hunter(HunterNPC p)//constructor
@@ -37,7 +37,7 @@ public class Hunter : StateFather//=moveState
         _actualPrey = 0;
         _rend = p.GetComponent<Renderer>();
 
-        //EnergyBarScript = p.EnergyBarScript;
+        EnergyBarScript = p.EnergyBarScript;
 
         HunterTransform = p.transform;
     }
@@ -130,7 +130,7 @@ public class Hunter : StateFather//=moveState
         HunterTransform.right = _velocity;
 
         RangeToKill();
-/*
+
         EnergyBarScript.HuntingModeEnergyConsumption();//Función que consume la energía
 
         if (EnergyBarScript.currentEnergyValue <= 0.017f)
@@ -141,7 +141,7 @@ public class Hunter : StateFather//=moveState
             Debug.Log("Se ha cambiado a estado Idle del cazador");
 
         }
-*/
+
     }
 
     public override void OnExit()

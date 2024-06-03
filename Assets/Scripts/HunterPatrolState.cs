@@ -11,7 +11,7 @@ public class HunterPatrolState : StateFather//=IdleState
     Vector3 _velocity;
     [SerializeField] int _myWayPointInt;
     Renderer _rend;
-    //public EnergyBar EnergyBarScript;
+    public EnergyBar EnergyBarScript;
 
     public Transform HunterTransform;
 
@@ -39,7 +39,7 @@ public class HunterPatrolState : StateFather//=IdleState
         _wayPointsArray = p._wayPointsArray;
         _myWayPointInt = 0;
         _rend = p.GetComponent<Renderer>();
-        //EnergyBarScript = p.EnergyBarScript;
+        EnergyBarScript = p.EnergyBarScript;
 
         HunterTransform = p.transform;
         _obstacles = p._obstacles;
@@ -120,7 +120,7 @@ public class HunterPatrolState : StateFather//=IdleState
 
     public override void ThisStateUpdate()//"Update" de este script
     {
-        /* if (TimeTakenToStartRecoveringEnergy() <= 0.1)
+         if (TimeTakenToStartRecoveringEnergy() <= 0.1)
          {
              EnergyBarScript.EnergyRecoveryIdleStateFunction();//Función que recarga la energía 
 
@@ -135,7 +135,7 @@ public class HunterPatrolState : StateFather//=IdleState
              Debug.Log("Se ha cambiado a estado Move del cazador");
 
          }
-        */
+        
         IfIseePlayerUpdate();
 
         Vector3 ActualDir = _wayPointsArray[_myWayPointInt].position - HunterTransform.position;

@@ -12,7 +12,7 @@ public class HunterNPC : MonoBehaviour//Player
     public GameObject Player;
     [SerializeField, Range(1, 10)] public float viewRadius;
     [SerializeField, Range(1, 360)] public float viewAngle;
-    //public EnergyBar EnergyBarScript;
+    public EnergyBar EnergyBarScript;
     public Transform HunterTransform;
     public float newradius=3;
     void Start()
