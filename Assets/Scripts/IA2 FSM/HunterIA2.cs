@@ -43,6 +43,7 @@ public class HunterIA2 : MonoBehaviour
     #endregion
     private void Start()
     {
+        _rend = GetComponent<Renderer>();
         SetUpFSM();
 
     }
@@ -315,9 +316,23 @@ public class HunterIA2 : MonoBehaviour
     public void SetUpFSM()
     {
         var idle = new EventStateIA2("Idle");
-        idle.OnEnter += () => OnEnter();
+        idle.OnEnter = () => OnEnter();
 
         idle.OnExit = () => OnExit();
+
+        idle.OnUpdate = () => ThisStateUpdate();
+
+
+        var moving = new EventStateIA2("Moving");
+        moving.OnEnter = () => OnEnterMoving();
+        moving.OnExit = () => OnExitMoving();
+        moving.OnUpdate = () => ThisStateUpdateMoving();
+
+
+        _fsm = new FiniteStateMachineIA2<States>();
+        _fsm.AddState(States.Idle, idle);
+        _fsm.AddState(States.Moving, moving);
+        _fsm.ChangeState(States.Idle);
     }
 
 
