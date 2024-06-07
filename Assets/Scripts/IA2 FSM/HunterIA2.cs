@@ -334,6 +334,10 @@ public class HunterIA2 : MonoBehaviour
         _fsm.AddState(States.Moving, moving);
         _fsm.ChangeState(States.Idle);
     }
+    private void Update()
+    {
+        _fsm.Update();
+    }
 
 
 }
