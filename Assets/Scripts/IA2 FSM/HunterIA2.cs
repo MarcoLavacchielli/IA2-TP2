@@ -316,11 +316,11 @@ public class HunterIA2 : MonoBehaviour
     public void SetUpFSM()
     {
         var idle = new EventStateIA2("Idle");
-        idle.OnEnter = () => OnEnter();
+        idle.OnEnter = OnEnter;
 
-        idle.OnExit = () => OnExit();
+        idle.OnExit = OnExit;
 
-        idle.OnUpdate = () => ThisStateUpdate();
+        idle.OnUpdate = ThisStateUpdate;
 
 
         var moving = new EventStateIA2("Moving");
