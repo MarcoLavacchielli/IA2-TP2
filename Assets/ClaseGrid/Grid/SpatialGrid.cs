@@ -10,7 +10,7 @@ public class SpatialGrid : MonoBehaviour
     //punto de inicio de la grilla en X
     public float x;
     //punto de inicio de la grilla en Z
-    public float y;
+    public float z;
     //ancho de las celdas
     public float cellWidth;
     //alto de las celdas
@@ -85,19 +85,19 @@ public class SpatialGrid : MonoBehaviour
 
     public IEnumerable<GridEntity> Query(Vector3 aabbFrom, Vector3 aabbTo, Func<Vector3, bool> filterByPosition)
     {
-        var from = new Vector3(Mathf.Min(aabbFrom.x, aabbTo.x), Mathf.Min(aabbFrom.y, aabbTo.y),0);
-        var to = new Vector3(Mathf.Max(aabbFrom.x, aabbTo.x), Mathf.Max(aabbFrom.y, aabbTo.y), 0);
+        var from = new Vector3(Mathf.Min(aabbFrom.x, aabbTo.x), 0, Mathf.Min(aabbFrom.z, aabbTo.z));
+        var to = new Vector3(Mathf.Max(aabbFrom.x, aabbTo.x), 0, Mathf.Max(aabbFrom.z, aabbTo.z));
 
         var fromCoord = GetPositionInGrid(from);
         var toCoord = GetPositionInGrid(to);
 
         //¡Ojo que clampea a 0,0 el Outside! TODO: Checkear cuando descartar el query si estan del mismo lado
-        fromCoord = Tuple.Create(Utility.Clampi(fromCoord.Item1, width, 0), Utility.Clampi(fromCoord.Item2, height, 0));
-        toCoord = Tuple.Create(Utility.Clampi(toCoord.Item1, width, 0), Utility.Clampi(toCoord.Item2, height, 0));
+        fromCoord = Tuple.Create(Utility.Clampi(fromCoord.Item1, 0, width), Utility.Clampi(fromCoord.Item2, 0, height));
+        toCoord = Tuple.Create(Utility.Clampi(toCoord.Item1, 0, width), Utility.Clampi(toCoord.Item2, 0, height));
 
         if (!IsInsideGrid(fromCoord) && !IsInsideGrid(toCoord))
             return Empty;
-        
+
         // Creamos tuplas de cada celda
         var cols = Generate(fromCoord.Item1, x => x + 1)
             .TakeWhile(x => x < width && x <= toCoord.Item1);
@@ -116,7 +116,7 @@ public class SpatialGrid : MonoBehaviour
             .SelectMany(cell => buckets[cell.Item1, cell.Item2])
             .Where(e =>
                 from.x <= e.transform.position.x && e.transform.position.x <= to.x &&
-                from.y <= e.transform.position.y && e.transform.position.y <= to.y
+                from.z <= e.transform.position.z && e.transform.position.z <= to.z
             ).Where(x => filterByPosition(x.transform.position));
     }
 
@@ -124,7 +124,7 @@ public class SpatialGrid : MonoBehaviour
     {
         //quita la diferencia, divide segun las celdas y floorea
         return Tuple.Create(Mathf.FloorToInt((pos.x - x) / cellWidth),
-                            Mathf.FloorToInt((pos.y - y) / cellHeight));
+                            Mathf.FloorToInt((pos.z - z) / cellHeight));
     }
 
     public bool IsInsideGrid(Tuple<int, int> position)
@@ -171,18 +171,18 @@ public class SpatialGrid : MonoBehaviour
     public bool showLogs = true;
     private void OnDrawGizmos()
     {
-        var rows = Generate(y, curr => curr + cellHeight)
-                .Select(row => Tuple.Create(new Vector3(x, row, 0),
-                                            new Vector3(x + cellWidth * width, row, 0)));
+        var rows = Generate(z, curr => curr + cellHeight)
+                .Select(row => Tuple.Create(new Vector3(x, 0, row),
+                                            new Vector3(x + cellWidth * width, 0, row)));
 
         //equivalente de rows
         /*for (int i = 0; i <= height; i++)
         {
-            Gizmos.DrawLine(new Vector3(x, 0, y + cellHeight * i), new Vector3(x + cellWidth * width,0, y + cellHeight * i));
+            Gizmos.DrawLine(new Vector3(x, 0, z + cellHeight * i), new Vector3(x + cellWidth * width,0, z + cellHeight * i));
         }*/
 
         var cols = Generate(x, curr => curr + cellWidth)
-                   .Select(col => Tuple.Create(new Vector3(col, y,0 ), new Vector3(col, y + cellHeight * height,0)));
+                   .Select(col => Tuple.Create(new Vector3(col, 0, z), new Vector3(col, 0, z + cellHeight * height)));
 
         var allLines = rows.Take(width + 1).Concat(cols.Take(height + 1));
 
@@ -198,18 +198,18 @@ public class SpatialGrid : MonoBehaviour
         if (!activatedGrid)
         {
             IEnumerable<GridEntity> allElems = Enumerable.Empty<GridEntity>();
-            foreach(var elem in buckets)
+            foreach (var elem in buckets)
                 allElems = allElems.Concat(elem);
 
             int connections = 0;
             foreach (var ent in allElems)
             {
-                foreach(var neighbour in allElems.Where(x => x != ent))
+                foreach (var neighbour in allElems.Where(x => x != ent))
                 {
                     Gizmos.DrawLine(ent.transform.position, neighbour.transform.position);
                     connections++;
                 }
-                if(showLogs)
+                if (showLogs)
                     Debug.Log("tengo " + connections + " conexiones por individuo");
                 connections = 0;
             }
@@ -219,14 +219,14 @@ public class SpatialGrid : MonoBehaviour
             int connections = 0;
             foreach (var elem in buckets)
             {
-                foreach(var ent in elem)
+                foreach (var ent in elem)
                 {
                     foreach (var n in elem.Where(x => x != ent))
                     {
                         Gizmos.DrawLine(ent.transform.position, n.transform.position);
                         connections++;
                     }
-                    if(showLogs)
+                    if (showLogs)
                         Debug.Log("tengo " + connections + " conexiones por individuo");
                     connections = 0;
                 }

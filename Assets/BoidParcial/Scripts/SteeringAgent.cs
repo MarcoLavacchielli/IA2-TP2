@@ -11,11 +11,11 @@ public class SteeringAgent : MonoBehaviour
 
     protected void Move()
     {
+        _velocity.y = 0; // Ensure Y component of velocity is zero
         transform.position += _velocity * Time.deltaTime;
-        if (_velocity != Vector3.zero) transform.right = _velocity;
+        transform.position = new Vector3(transform.position.x, 0, transform.position.z); // Ensure Y component of position is zero
+        if (_velocity != Vector3.zero) transform.forward = _velocity;
     }
-
-
 
     protected Vector3 Seek(Vector3 targetPos)
     {
@@ -25,6 +25,7 @@ public class SteeringAgent : MonoBehaviour
     protected Vector3 Seek(Vector3 targetPos, float speed) //Busca al objetivo
     {
         Vector3 desired = (targetPos - transform.position).normalized * speed;
+        desired.y = 0; // Ensure Y component of desired direction is zero
         Vector3 steering = desired - _velocity;
         steering = Vector3.ClampMagnitude(steering, _maxForce * Time.deltaTime);
         return steering;
@@ -43,6 +44,7 @@ public class SteeringAgent : MonoBehaviour
     protected Vector3 Pursuit(SteeringAgent targetAgent) //Pursuit /= Seek. Seek busca dentro de un rango, Pursuit persigue un objetivo
     {
         Vector3 futurePos = targetAgent.transform.position + targetAgent._velocity;
+        futurePos.y = 0; // Ensure Y component of future position is zero
         Debug.DrawLine(transform.position, futurePos, Color.cyan);
 
         return Seek(futurePos);
@@ -55,7 +57,7 @@ public class SteeringAgent : MonoBehaviour
 
     public void ResetPosition()
     {
-        transform.position = Vector3.zero;
+        transform.position = new Vector3(0, 0, 0); // Ensure Y component of reset position is zero
     }
 
     protected Vector3 Alignment(List<SteeringAgent> agents) //Alineación de un conjunto de objetos o Flock
@@ -72,6 +74,7 @@ public class SteeringAgent : MonoBehaviour
         }
 
         desired /= boidsCount;
+        desired.y = 0; // Ensure Y component of desired direction is zero
 
         return CalculateSteering(desired.normalized * _maxSpeed);
     }
@@ -90,6 +93,7 @@ public class SteeringAgent : MonoBehaviour
 
         if (desired == Vector3.zero) return Vector3.zero;
         desired *= -1;
+        desired.y = 0; // Ensure Y component of desired direction is zero
 
         return CalculateSteering(desired.normalized * _maxSpeed);
     }
@@ -111,6 +115,7 @@ public class SteeringAgent : MonoBehaviour
 
         if (boidsCount == 0) return Vector3.zero; //Si no hay agentes
         desired /= boidsCount;
+        desired.y = 0; // Ensure Y component of desired position is zero
 
         return Seek(desired);
     }
@@ -122,6 +127,7 @@ public class SteeringAgent : MonoBehaviour
 
     protected void AddForce(Vector3 force)
     {
+        force.y = 0; // Ensure Y component of force is zero
         _velocity = Vector3.ClampMagnitude(_velocity + force, _maxSpeed);
     }
 
@@ -135,7 +141,7 @@ public class SteeringAgent : MonoBehaviour
         Vector3 leftRayPos = transform.position + transform.up * 0.5f;
         Vector3 rightRayPos = transform.position - transform.up * 0.5f;
 
-        Gizmos.DrawLine(leftRayPos, leftRayPos + transform.right * _viewRadius);
-        Gizmos.DrawLine(rightRayPos, rightRayPos + transform.right * _viewRadius);
+        Gizmos.DrawLine(leftRayPos, leftRayPos + transform.forward * _viewRadius);
+        Gizmos.DrawLine(rightRayPos, rightRayPos + transform.forward * _viewRadius);
     }
 }

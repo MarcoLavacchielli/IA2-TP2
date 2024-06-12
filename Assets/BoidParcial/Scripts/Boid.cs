@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//Lucas Peck
+// Lucas Peck
 
 public class Boid : SteeringAgent
 {
@@ -13,14 +13,14 @@ public class Boid : SteeringAgent
 
     private void Start()
     {
-        float x = Random.Range(-1f,1f);
-        float y = Random.Range(-1f, 1f);
+        float x = Random.Range(-1f, 1f);
+        float z = Random.Range(-1f, 1f);
 
-        var dir = new Vector3(x, y);
+        var dir = new Vector3(x, 0, z);
 
         _velocity = dir.normalized * _maxSpeed;
 
-        GameManager.instance.allAgents.Add(this); //Agrega la lista del Game Manager
+        GameManager.instance.allAgents.Add(this); // Agrega la lista del Game Manager
     }
 
     void Update()
@@ -39,7 +39,13 @@ public class Boid : SteeringAgent
         }
 
         transform.position += _velocity * Time.deltaTime;
-        if (_velocity != Vector3.zero) transform.right = _velocity;
+
+        if (_velocity != Vector3.zero)
+        {
+            // Ensure rotation only affects Y-axis (XZ plane movement)
+            Quaternion rotation = Quaternion.LookRotation(_velocity, Vector3.up);
+            transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 5f);
+        }
 
         Flocking();
     }
@@ -48,13 +54,13 @@ public class Boid : SteeringAgent
     {
         var boids = GameManager.instance.allAgents;
         AddForce(Alignment(boids) * _alignmentWeight);
-        AddForce(Separation(boids) * _separationWeight); //Se aplica un radio mas chico al actual
+        AddForce(Separation(boids) * _separationWeight); // Se aplica un radio más chico al actual
         AddForce(Cohesion(boids) * _cohesionWeight);
     }
 
     private void UpdateBoundPosition()
     {
-        transform.position = GameManager.instance.AdjustPostionToBounds(transform.position); //Ajusta los límites del Game Manager para que no se salgan de adentro.
+        transform.position = GameManager.instance.AdjustPostionToBounds(transform.position); // Ajusta los límites del Game Manager para que no se salgan de adentro.
     }
 
     protected bool HastToUseObstacleAvoidance()
@@ -66,12 +72,12 @@ public class Boid : SteeringAgent
 
     protected Vector3 ObstacleAvoidance()
     {
-        if (Physics.Raycast(transform.position + transform.up * 0.5f, transform.right, _viewRadius, _obstacles))
+        if (Physics.Raycast(transform.position + transform.up * 0.5f, transform.forward, _viewRadius, _obstacles))
         {
             _velocity = transform.position - transform.up;
 
         }
-        else if (Physics.Raycast(transform.position - transform.up * 0.5f, transform.right, -_viewRadius, _obstacles))
+        else if (Physics.Raycast(transform.position - transform.up * 0.5f, transform.forward, -_viewRadius, _obstacles))
         {
             _velocity = transform.position + transform.up;
         }
@@ -79,6 +85,7 @@ public class Boid : SteeringAgent
         {
             _velocity = _seekTarget.transform.position - transform.position;
         }
+        _velocity.y = 0; // Ensure the velocity remains on the XZ plane
         return Vector3.zero;
     }
 

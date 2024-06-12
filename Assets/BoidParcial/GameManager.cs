@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//Lucas Peck
+// Lucas Peck
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
     [SerializeField] float _boundWidth;
-    [SerializeField] float _boundHeight;
+    [SerializeField] float _boundDepth;  // Cambiado de _boundHeight a _boundDepth
 
     public List<SteeringAgent> allAgents = new List<SteeringAgent>();
 
@@ -23,23 +23,23 @@ public class GameManager : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireCube(transform.position, new Vector3(_boundWidth, _boundHeight));
+        // Cambiado para usar _boundDepth en lugar de _boundHeight
+        Gizmos.DrawWireCube(transform.position, new Vector3(_boundWidth, 0, _boundDepth));
     }
 
     public Vector3 AdjustPostionToBounds(Vector3 pos)
     {
-        //Pasar los limites y dividiendolos
+        // Pasar los límites y dividirlos
 
-        float height = _boundHeight / 2;
+        float depth = _boundDepth / 2;  // Cambiado de height a depth
         float width = _boundWidth / 2;
 
-        if (pos.y > height) pos.y = -height;
-        if (pos.y < -height) pos.y = height;
+        if (pos.z > depth) pos.z = -depth;
+        if (pos.z < -depth) pos.z = depth;
 
         if (pos.x > width) pos.x = -width;
         if (pos.x < -width) pos.x = width;
 
         return pos;
     }
-
 }
