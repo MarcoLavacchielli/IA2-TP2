@@ -1865,7 +1865,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxSpeed: 15
   _radius: 7
-  _maxForce: 5
+  _maxForce: 24.36
   _wayPointsArray:
   - {fileID: 1402868197}
   - {fileID: 498173979}
@@ -3499,7 +3499,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!135 &1833351740
 SphereCollider:
   m_ObjectHideFlags: 0

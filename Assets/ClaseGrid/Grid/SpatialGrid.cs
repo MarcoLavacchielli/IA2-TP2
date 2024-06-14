@@ -56,10 +56,22 @@ public class SpatialGrid : MonoBehaviour
         foreach (var e in ents)
         {
             e.OnMove += UpdateEntity;
+            e.OnDestroyEvent += RemoveEntity;
             UpdateEntity(e);
         }
     }
+    public void RemoveEntity(GridEntity entity)
+    {
+        var lastpos = lastPositions.ContainsKey(entity) ? lastPositions[entity]: Outside;
+       // if(lastpos.Equals(Outside))
+            //return;
 
+        buckets[lastpos.Item1, lastpos.Item2].Remove(entity);
+        lastPositions.Remove(entity);
+
+
+
+    }
     public void UpdateEntity(GridEntity entity)
     {
         var lastPos = lastPositions.ContainsKey(entity) ? lastPositions[entity] : Outside;

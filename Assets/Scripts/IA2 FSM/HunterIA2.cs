@@ -302,6 +302,7 @@ public class HunterIA2 : MonoBehaviour
                 _arrayOfEnemies[_actualPrey].gameObject.SetActive(false);
                 _actualPrey += 1;
             }*/
+            //MyPreyGO.gameObject.SetActive(false);
             Destroy(MyPreyGO.gameObject);
             CollectingBoidsToHunt();
 
