@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 // Falta el On draw Gizmos que está en HunterPatrolStatePeroNoTieneMuchoSentidoPasarlo. Tambien el darw Gizmos de Hunter(el chase state)
 public class HunterIA2 : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class HunterIA2 : MonoBehaviour
     public Transform HunterTransform;
 
     [SerializeField] LayerMask _obstacles;
-    Vector3 _desired;
+    public Vector3 _desired;
 
     public float MaxEnergy = 1;
     public float MinEnergy = 0;
@@ -40,12 +41,82 @@ public class HunterIA2 : MonoBehaviour
     [SerializeField] int _actualPrey;
     [SerializeField] float _rangeToKill;
     [SerializeField] LayerMask _enemies;
+    [Header("Variables Query")]
+    public bool isBox;
+    public float radius = 20f;
+    public SpatialGrid targetGrid;
+    public float width = 15f;
+    public float height = 30f;
+    public IEnumerable<GridEntity> selected = new List<GridEntity>();
+    public GameObject MyPreyGO;
+    public Transform standarHuntingPosition;
+    public bool AlreadyHaveAPrey;
+
+    #region Query
+
+    public void CollectingBoidsToHunt()
+    {
+        if (AlreadyHaveAPrey == false)
+        {
+            var firstItem = Query().FirstOrDefault();
+
+            if (firstItem != null)
+            {
+                MyPreyGO = firstItem.gameObject;
+                AlreadyHaveAPrey = true;
+            }
+
+        }
+
+
+
+
+    }
+    public IEnumerable<GridEntity> Query()
+    {
+
+
+        var h = height * 0.5f;
+        var w = width * 0.5f;
+
+        return targetGrid.Query(
+            transform.position + new Vector3(-w, 0, -h),
+            transform.position + new Vector3(w, 0, h),
+            x => true);
+
+    }
+    void OnDrawGizmos()
+    {
+
+        Gizmos.color = Color.cyan;
+
+        Gizmos.DrawWireCube(transform.position, new Vector3(width, 0, height));
+        if (Application.isPlaying)
+        {
+            selected = Query();
+            var temp = FindObjectsOfType<GridEntity>().Where(x => !selected.Contains(x));
+            foreach (var item in temp)
+            {
+                item.onGrid = false;
+            }
+            foreach (var item in selected)
+            {
+                item.onGrid = true;
+            }
+
+
+        }
+
+    }
+    #endregion
     #endregion
     private void Start()
     {
         _rend = GetComponent<Renderer>();
         SetUpFSM();
     }
+
+
     #region IdleGeneral
     public void OnEnter()
     {
@@ -203,14 +274,25 @@ public class HunterIA2 : MonoBehaviour
         }
         else
         {
-            _desired = _arrayOfEnemies[_actualPrey].transform.position - HunterTransform.position;
+         CollectingBoidsToHunt();
+            if (MyPreyGO == null)
+            {
+                _desired = standarHuntingPosition.transform.position - HunterTransform.position;
+                Debug.Log("yendo al standar pos en hunting mode");
+            }
+            else
+            {
+                _desired = MyPreyGO.transform.position - HunterTransform.position;
+
+            }
+            //_desired = _arrayOfEnemies[_actualPrey].transform.position - HunterTransform.position;
         }
     }
     public void RangeToKill()
     {
         if (Physics.Raycast(HunterTransform.position, HunterTransform.right, _rangeToKill, _enemies) || Physics.Raycast(HunterTransform.position, -HunterTransform.right, _rangeToKill, _enemies) || Physics.Raycast(HunterTransform.position, HunterTransform.up, _rangeToKill, _enemies) || Physics.Raycast(HunterTransform.position, -HunterTransform.up, _rangeToKill, _enemies))
         {
-            if (_arrayOfEnemies[_actualPrey].gameObject == null)
+            /*if (_arrayOfEnemies[_actualPrey].gameObject == null)
             {
                 _actualPrey += 1;
                 _arrayOfEnemies[_actualPrey].gameObject.SetActive(false);
@@ -219,14 +301,18 @@ public class HunterIA2 : MonoBehaviour
             {
                 _arrayOfEnemies[_actualPrey].gameObject.SetActive(false);
                 _actualPrey += 1;
-            }
+            }*/
+            Destroy(MyPreyGO.gameObject);
+            CollectingBoidsToHunt();
+
         }
     }
     #endregion
 
-    public void OnEnterMoving()
+    public void OnEnterMoving()//Editado IA2
     {
         Debug.Log("Cazador entro a estado Move");
+        CollectingBoidsToHunt();
         _rend.material.color = Color.red;
     }
     public void ThisStateUpdateMoving()
