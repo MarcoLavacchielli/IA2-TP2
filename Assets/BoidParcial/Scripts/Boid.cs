@@ -50,7 +50,7 @@ public class Boid : SteeringAgent
         Flocking();
     }
 
-    private void Flocking()
+    private void Flocking()//REEMPLAZAR POR LA BUSQUEDA CON QUERY 
     {
         var boids = GameManager.instance.allAgents;
         AddForce(Alignment(boids) * _alignmentWeight);

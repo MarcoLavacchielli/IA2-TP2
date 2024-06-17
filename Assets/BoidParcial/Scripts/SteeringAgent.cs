@@ -67,7 +67,7 @@ public class SteeringAgent : MonoBehaviour
 
         foreach (var item in agents)
         {
-            if (Vector3.Distance(item.transform.position, transform.position) > _viewRadius) continue;
+            //if (Vector3.Distance(item.transform.position, transform.position) > _viewRadius) continue;
 
             desired += item._velocity;
             boidsCount++;

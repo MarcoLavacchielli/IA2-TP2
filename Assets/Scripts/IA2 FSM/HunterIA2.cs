@@ -277,6 +277,7 @@ public class HunterIA2 : MonoBehaviour
          CollectingBoidsToHunt();
             if (MyPreyGO == null)
             {
+                AlreadyHaveAPrey=false;
                 _desired = standarHuntingPosition.transform.position - HunterTransform.position;
                 Debug.Log("yendo al standar pos en hunting mode");
             }
