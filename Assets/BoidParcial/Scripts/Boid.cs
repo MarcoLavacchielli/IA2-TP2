@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 // Lucas Peck
@@ -11,6 +12,14 @@ public class Boid : SteeringAgent
     [SerializeField, Range(0f, 2.5f)] float _separationWeight = 1;
     [SerializeField, Range(0f, 2.5f)] float _cohesionWeight = 1;
 
+    [Header("Variables Query")]
+    public bool isBox;
+    public float radius = 20f;
+    public SpatialGrid targetGrid;
+    public float width = 15f;
+    public float height = 30f;
+    public IEnumerable<GridEntity> selected = new List<GridEntity>();
+    public GridEntity[] GridArray;
     private void Start()
     {
         float x = Random.Range(-1f, 1f);
@@ -21,6 +30,43 @@ public class Boid : SteeringAgent
         _velocity = dir.normalized * _maxSpeed;
 
         GameManager.instance.allAgents.Add(this); // Agrega la lista del Game Manager
+    }
+    public IEnumerable<GridEntity> Query()
+    {
+
+
+        var h = height * 0.5f;
+        var w = width * 0.5f;
+
+        return targetGrid.Query(
+            transform.position + new Vector3(-w, 0, -h),
+            transform.position + new Vector3(w, 0, h),
+            x => true);
+
+    }
+    public List<SteeringAgent> BoidsNearMe()
+    {
+        // Crea una lista para almacenar los SteeringAgents encontrados
+        List<SteeringAgent> steeringAgents = new List<SteeringAgent>();
+
+        // Itera sobre cada GridEntity en el resultado de Query
+        foreach (GridEntity entity in Query())
+        {
+            // Intenta obtener el componente SteeringAgent del GridEntity
+            SteeringAgent agent = entity.GetComponent<SteeringAgent>();
+
+            // Si el SteeringAgent existe, agrégalo a la lista
+            if (agent != null)
+            {
+                steeringAgents.Add(agent);
+            }
+        }
+
+        // Retorna la lista de SteeringAgents encontrados
+        return steeringAgents;
+
+
+
     }
 
     void Update()
@@ -52,11 +98,13 @@ public class Boid : SteeringAgent
 
     private void Flocking()//REEMPLAZAR POR LA BUSQUEDA CON QUERY 
     {
+
         var boids = GameManager.instance.allAgents;
-        AddForce(Alignment(boids) * _alignmentWeight);
-        AddForce(Separation(boids) * _separationWeight); // Se aplica un radio más chico al actual
-        AddForce(Cohesion(boids) * _cohesionWeight);
+        AddForce(Alignment(BoidsNearMe()) * _alignmentWeight);
+        AddForce(Separation(BoidsNearMe()) * _separationWeight); // Se aplica un radio más chico al actual
+        AddForce(Cohesion(BoidsNearMe()) * _cohesionWeight);
     }
+
 
     private void UpdateBoundPosition()
     {
