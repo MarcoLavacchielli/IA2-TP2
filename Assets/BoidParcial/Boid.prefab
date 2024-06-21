@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6610576611996381539}
   - component: {fileID: 6610576611996381540}
   - component: {fileID: 5996348942955352532}
+  - component: {fileID: 7243294377412387914}
   m_Layer: 0
   m_Name: Boid
   m_TagString: Untagged
@@ -111,7 +112,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c088291d8aa861d458d590a2b31b55c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxSpeed: 5
+  _maxSpeed: 4
   _maxForce: 3
   _viewRadius: 3
   _obstacles:
@@ -122,6 +123,28 @@ MonoBehaviour:
   _alignmentWeight: 1.5
   _separationWeight: 0.8
   _cohesionWeight: 1.5
+  isBox: 0
+  radius: 20
+  targetGrid: {fileID: 0}
+  width: 15
+  height: 30
+  GridArray: []
+  GridList: []
+--- !u!114 &7243294377412387914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1479994716048849306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac49b2b6d50c7a749bea4d8294713dac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  velocity: {x: 0, y: 0, z: 0}
+  onGrid: 0
+  agentScript: {fileID: 0}
 --- !u!1 &6610576610637183266
 GameObject:
   m_ObjectHideFlags: 0

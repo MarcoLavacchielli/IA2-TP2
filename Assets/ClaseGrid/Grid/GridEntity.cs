@@ -9,10 +9,18 @@ public class GridEntity : MonoBehaviour
     public Vector3 velocity = new Vector3(0, 0, 0);
     public bool onGrid;
     Renderer _rend;
+    // nueva variable IA2
+    public SteeringAgent agentScript;
 
     private void Awake()
     {
         _rend = GetComponent<Renderer>();
+        agentScript= GetComponent<SteeringAgent>();
+    }
+    private void OnEnable()
+    {
+        _rend = GetComponent<Renderer>();
+        agentScript = GetComponent<SteeringAgent>();
     }
 
     void Update() {

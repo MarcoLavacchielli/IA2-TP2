@@ -60,7 +60,7 @@ public class SteeringAgent : MonoBehaviour
         transform.position = new Vector3(0, 0, 0); // Ensure Y component of reset position is zero
     }
 
-    protected Vector3 Alignment(List<SteeringAgent> agents) //Alineación de un conjunto de objetos o Flock
+    protected Vector3 Alignment(List<GridEntity> agents) //Alineación de un conjunto de objetos o Flock
     {
         Vector3 desired = Vector3.zero;
         int boidsCount = 0;
@@ -69,17 +69,20 @@ public class SteeringAgent : MonoBehaviour
         {
             //if (Vector3.Distance(item.transform.position, transform.position) > _viewRadius) continue;
 
-            desired += item._velocity;
+            desired += item.agentScript._velocity;
             boidsCount++;
         }
 
         desired /= boidsCount;
         desired.y = 0; // Ensure Y component of desired direction is zero
 
+        
+        
+
         return CalculateSteering(desired.normalized * _maxSpeed);
     }
 
-    protected Vector3 Separation(List<SteeringAgent> agents) //Separación entre los objetos dentro de ese grupo o Flock
+    protected Vector3 Separation(List<GridEntity> agents) //Separación entre los objetos dentro de ese grupo o Flock
     {
         Vector3 desired = Vector3.zero;
 
@@ -98,7 +101,7 @@ public class SteeringAgent : MonoBehaviour
         return CalculateSteering(desired.normalized * _maxSpeed);
     }
 
-    protected Vector3 Cohesion(List<SteeringAgent> agents) //Establece un promedio entre las distancias de los objetos 
+    protected Vector3 Cohesion(List<GridEntity> agents) //Establece un promedio entre las distancias de los objetos 
     {
         Vector3 desired = Vector3.zero;
         int boidsCount = 0;

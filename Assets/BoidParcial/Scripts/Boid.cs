@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 
 // Lucas Peck
@@ -20,8 +21,28 @@ public class Boid : SteeringAgent
     public float height = 30f;
     public IEnumerable<GridEntity> selected = new List<GridEntity>();
     public GridEntity[] GridArray;
+    public List<GridEntity> GridList;
+
+    public GameObject seekTargetGO, fleeTargetGO;
+
+    private void Awake()
+    {
+        targetGrid = GetComponentInParent<SpatialGrid>();
+    }
+    private void OnEnable()
+    {
+        targetGrid = GetComponentInParent<SpatialGrid>();
+        seekTargetGO = GameObject.FindGameObjectWithTag("SeekTarget");
+        fleeTargetGO = GameObject.FindGameObjectWithTag("Hunter");
+        _seekTarget = seekTargetGO.transform;
+        _fleeTarget = fleeTargetGO.transform;
+        if (targetGrid == null)
+            targetGrid = GetComponentInParent<SpatialGrid>();
+    }
     private void Start()
     {
+        targetGrid = GetComponentInParent<SpatialGrid>();
+
         float x = Random.Range(-1f, 1f);
         float z = Random.Range(-1f, 1f);
 
@@ -30,6 +51,18 @@ public class Boid : SteeringAgent
         _velocity = dir.normalized * _maxSpeed;
 
         GameManager.instance.allAgents.Add(this); // Agrega la lista del Game Manager
+    }
+    public void SeekForNullReferences()
+    {
+        if (seekTargetGO == null || fleeTargetGO == null || targetGrid == null || _seekTarget == null || _fleeTarget == null)
+        {
+            targetGrid = GetComponentInParent<SpatialGrid>();
+            seekTargetGO = GameObject.FindGameObjectWithTag("SeekTarget");
+            fleeTargetGO = GameObject.FindGameObjectWithTag("Hunter");
+            _seekTarget = seekTargetGO.transform;
+            _fleeTarget = fleeTargetGO.transform;
+
+        }
     }
     public IEnumerable<GridEntity> Query()
     {
@@ -94,15 +127,20 @@ public class Boid : SteeringAgent
         }
 
         Flocking();
+        SeekForNullReferences();
     }
 
     private void Flocking()//REEMPLAZAR POR LA BUSQUEDA CON QUERY 
     {
+        //UNA LISTA SIEMPRE ME VA A DAR NULOS, SIN ES UN ARRAY NO SE PUEDE EXPANDIR, 
 
-        var boids = GameManager.instance.allAgents;
-        AddForce(Alignment(BoidsNearMe()) * _alignmentWeight);
-        AddForce(Separation(BoidsNearMe()) * _separationWeight); // Se aplica un radio más chico al actual
-        AddForce(Cohesion(BoidsNearMe()) * _cohesionWeight);
+
+        //var boids = GameManager.instance.allAgents;
+        //GridArray = Query().ToArray();
+        GridList = Query().ToList();
+        AddForce(Alignment(GridList) * _alignmentWeight);
+        AddForce(Separation(GridList) * _separationWeight); // Se aplica un radio más chico al actual
+        AddForce(Cohesion(GridList) * _cohesionWeight);
     }
 
 
