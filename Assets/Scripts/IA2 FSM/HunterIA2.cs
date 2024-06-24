@@ -305,6 +305,7 @@ public class HunterIA2 : MonoBehaviour
             }*/
             //MyPreyGO.gameObject.SetActive(false);
             Destroy(MyPreyGO.gameObject);
+            Debug.Log("he matado");
             CollectingBoidsToHunt();
 
         }

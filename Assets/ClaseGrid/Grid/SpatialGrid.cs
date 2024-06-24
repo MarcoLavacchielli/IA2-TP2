@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class SpatialGrid : MonoBehaviour
 {
@@ -37,9 +38,20 @@ public class SpatialGrid : MonoBehaviour
     readonly public GridEntity[] Empty = new GridEntity[0];
     #endregion
 
+    // Referencia al prefab que se va a instanciar
+    public GameObject prefab;
+
+    // Lista para almacenar las instancias
+    public List<GameObject> instances = new List<GameObject>();
+
+    // Cantidad de prefabs a instanciar inicialmente
+    private int initialQuantity = 90;
+
     #region FUNCIONES
     private void Awake()
     {
+        SpawnerAwakeFunction();
+        
         lastPositions = new Dictionary<GridEntity, Tuple<int, int>>();
         buckets = new HashSet<GridEntity>[width, height];
 
@@ -55,10 +67,80 @@ public class SpatialGrid : MonoBehaviour
 
         foreach (var e in ents)
         {
+            e.OnEnableEvent += AddEntity;
             e.OnMove += UpdateEntity;
             e.OnDestroyEvent += RemoveEntity;
             UpdateEntity(e);
         }
+    }
+
+
+    public void SpawnerAwakeFunction()
+    {
+        // Asegúrate de que el prefab esté asignado
+        if (prefab != null)
+        {
+            for (int i = 0; i < initialQuantity; i++)
+            {
+                InstantiateAndAddToList();
+
+            }
+
+            // Iniciar la corrutina para revisar y re-instanciar prefabs cada 10 segundos
+            StartCoroutine(CheckAndRefillList());
+        }
+        else
+        {
+            Debug.LogError("Prefab no asignado en el Inspector.");
+        }
+    }
+
+    void InstantiateAndAddToList()
+    {
+        // Instancia el prefab
+        GameObject instance = Instantiate(prefab);
+
+        // Hace que el objeto instanciado sea hijo del objeto en el que está este script
+        instance.transform.SetParent(transform);
+        instance.gameObject.SetActive(true);
+
+        // Agrega la instancia a la lista
+        instances.Add(instance);
+    }
+
+    IEnumerator CheckAndRefillList()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(20f);
+
+            // Revisar la lista y rellenar los espacios nulos
+            for (int i = 0; i < instances.Count; i++)
+            {
+                if (instances[i] == null)
+                {
+                    GameObject instance = Instantiate(prefab);
+                    instance.transform.SetParent(transform);
+                    instance.gameObject.SetActive(true);
+                    instances[i] = instance;
+                }
+            }
+
+            // En caso de que necesitemos añadir más elementos para mantener el tamaño de la lista
+            while (instances.Count < initialQuantity)
+            {
+                InstantiateAndAddToList();
+            }
+        }
+    }
+    public void AddEntity(GridEntity entity)
+    {
+        var lastpos = lastPositions.ContainsKey(entity) ? lastPositions[entity] : Outside;
+        // if(lastpos.Equals(Outside))
+        //return;
+
+        buckets[lastpos.Item1, lastpos.Item2].Add(entity);
+        //lastPositions.Add(entity);
     }
     public void RemoveEntity(GridEntity entity)
     {

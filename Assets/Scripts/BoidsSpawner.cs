@@ -15,6 +15,11 @@ public class BoidsSpawner : MonoBehaviour
 
     void Awake()
     {
+       
+    }
+
+    public void SpawnerAwakeFunction()
+    {
         // Asegúrate de que el prefab esté asignado
         if (prefab != null)
         {
