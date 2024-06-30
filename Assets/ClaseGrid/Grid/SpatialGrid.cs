@@ -47,11 +47,13 @@ public class SpatialGrid : MonoBehaviour
     // Cantidad de prefabs a instanciar inicialmente
     private int initialQuantity = 90;
 
+    public bool boolForSpawningBoidsAfterAwake;
+
     #region FUNCIONES
     private void Awake()
     {
         SpawnerAwakeFunction();
-        
+
         lastPositions = new Dictionary<GridEntity, Tuple<int, int>>();
         buckets = new HashSet<GridEntity>[width, height];
 
@@ -72,6 +74,7 @@ public class SpatialGrid : MonoBehaviour
             e.OnDestroyEvent += RemoveEntity;
             UpdateEntity(e);
         }
+        boolForSpawningBoidsAfterAwake = true;
     }
 
 
@@ -104,6 +107,21 @@ public class SpatialGrid : MonoBehaviour
         instance.transform.SetParent(transform);
         instance.gameObject.SetActive(true);
 
+        GridEntity entity = instance.GetComponent<GridEntity>();
+        if (entity != null)
+        {
+            entity.OnEnableEvent += AddEntity;
+            entity.OnMove += UpdateEntity;
+            entity.OnDestroyEvent += RemoveEntity;
+
+            // Llamar a AddEntity para suscribir el Boid al SpatialGrid
+        }
+
+            if (boolForSpawningBoidsAfterAwake)
+            {
+                Debug.Log("xd");
+                AddEntity(entity);
+            }
         // Agrega la instancia a la lista
         instances.Add(instance);
     }
@@ -135,18 +153,34 @@ public class SpatialGrid : MonoBehaviour
     }
     public void AddEntity(GridEntity entity)
     {
-        var lastpos = lastPositions.ContainsKey(entity) ? lastPositions[entity] : Outside;
+        /*var lastpos = lastPositions.ContainsKey(entity) ? lastPositions[entity] : Outside;
         // if(lastpos.Equals(Outside))
         //return;
 
         buckets[lastpos.Item1, lastpos.Item2].Add(entity);
-        //lastPositions.Add(entity);
+        //lastPositions.Add(entity);*/
+
+        var currentPos = GetPositionInGrid(entity.gameObject.transform.position);
+
+        if (IsInsideGrid(currentPos))
+        {
+            // Añadir la entidad a la celda correspondiente
+            buckets[currentPos.Item1, currentPos.Item2].Add(entity);
+            // Guardar la posición actual en el diccionario
+            lastPositions[entity] = currentPos;
+            entity.onGrid = true; // Indicar que la entidad está en la grilla
+        }
+        else
+        {
+            lastPositions[entity] = Outside;
+            entity.onGrid = false; // Indicar que la entidad no está en la grilla
+        }
     }
     public void RemoveEntity(GridEntity entity)
     {
-        var lastpos = lastPositions.ContainsKey(entity) ? lastPositions[entity]: Outside;
-       // if(lastpos.Equals(Outside))
-            //return;
+        var lastpos = lastPositions.ContainsKey(entity) ? lastPositions[entity] : Outside;
+        // if(lastpos.Equals(Outside))
+        //return;
 
         buckets[lastpos.Item1, lastpos.Item2].Remove(entity);
         lastPositions.Remove(entity);
