@@ -77,30 +77,7 @@ public class Boid : SteeringAgent
             x => true);
 
     }
-    public List<SteeringAgent> BoidsNearMe()
-    {
-        // Crea una lista para almacenar los SteeringAgents encontrados
-        List<SteeringAgent> steeringAgents = new List<SteeringAgent>();
-
-        // Itera sobre cada GridEntity en el resultado de Query
-        foreach (GridEntity entity in Query())
-        {
-            // Intenta obtener el componente SteeringAgent del GridEntity
-            SteeringAgent agent = entity.GetComponent<SteeringAgent>();
-
-            // Si el SteeringAgent existe, agrégalo a la lista
-            if (agent != null)
-            {
-                steeringAgents.Add(agent);
-            }
-        }
-
-        // Retorna la lista de SteeringAgents encontrados
-        return steeringAgents;
-
-
-
-    }
+   
 
     void Update()
     {

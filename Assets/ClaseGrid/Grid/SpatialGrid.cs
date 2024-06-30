@@ -92,36 +92,35 @@ public class SpatialGrid : MonoBehaviour
             // Iniciar la corrutina para revisar y re-instanciar prefabs cada 10 segundos
             StartCoroutine(CheckAndRefillList());
         }
-        else
-        {
-            Debug.LogError("Prefab no asignado en el Inspector.");
-        }
+        
     }
 
     void InstantiateAndAddToList()
     {
         // Instancia el prefab
         GameObject instance = Instantiate(prefab);
+        instance.transform.position = Vector3.zero;
 
         // Hace que el objeto instanciado sea hijo del objeto en el que está este script
         instance.transform.SetParent(transform);
         instance.gameObject.SetActive(true);
-
+       
         GridEntity entity = instance.GetComponent<GridEntity>();
-        if (entity != null)
-        {
             entity.OnEnableEvent += AddEntity;
             entity.OnMove += UpdateEntity;
             entity.OnDestroyEvent += RemoveEntity;
+        Debug.Log("Se les ha otorgado funciones a los delegados");
+        if (entity != null)
+        {
 
             // Llamar a AddEntity para suscribir el Boid al SpatialGrid
         }
 
-            if (boolForSpawningBoidsAfterAwake)
-            {
-                Debug.Log("xd");
-                AddEntity(entity);
-            }
+        if (boolForSpawningBoidsAfterAwake)
+        {
+            Debug.Log("xd");
+            AddEntity(entity);
+        }
         // Agrega la instancia a la lista
         instances.Add(instance);
     }
@@ -130,7 +129,7 @@ public class SpatialGrid : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(20f);
+            yield return new WaitForSeconds(8f);
 
             // Revisar la lista y rellenar los espacios nulos
             for (int i = 0; i < instances.Count; i++)
@@ -139,7 +138,14 @@ public class SpatialGrid : MonoBehaviour
                 {
                     GameObject instance = Instantiate(prefab);
                     instance.transform.SetParent(transform);
+                    instance.transform.position = Vector3.zero;
                     instance.gameObject.SetActive(true);
+                    GridEntity entity = instance.GetComponent<GridEntity>();
+                    entity.OnEnableEvent += AddEntity;
+                    entity.OnMove += UpdateEntity;
+                    entity.OnDestroyEvent += RemoveEntity;
+                    Debug.Log("Se les ha otorgado funciones a los delegados");
+
                     instances[i] = instance;
                 }
             }
@@ -153,13 +159,13 @@ public class SpatialGrid : MonoBehaviour
     }
     public void AddEntity(GridEntity entity)
     {
-        /*var lastpos = lastPositions.ContainsKey(entity) ? lastPositions[entity] : Outside;
+       /*var lastpos = lastPositions.ContainsKey(entity) ? lastPositions[entity] : Outside;
         // if(lastpos.Equals(Outside))
         //return;
 
         buckets[lastpos.Item1, lastpos.Item2].Add(entity);
-        //lastPositions.Add(entity);*/
-
+        //lastPositions.Add(entity);
+        */
         var currentPos = GetPositionInGrid(entity.gameObject.transform.position);
 
         if (IsInsideGrid(currentPos))
@@ -178,15 +184,27 @@ public class SpatialGrid : MonoBehaviour
     }
     public void RemoveEntity(GridEntity entity)
     {
-        var lastpos = lastPositions.ContainsKey(entity) ? lastPositions[entity] : Outside;
-        // if(lastpos.Equals(Outside))
-        //return;
+        /* var lastpos = lastPositions.ContainsKey(entity) ? lastPositions[entity] : Outside;
+         // if(lastpos.Equals(Outside))
+         //return;
 
-        buckets[lastpos.Item1, lastpos.Item2].Remove(entity);
-        lastPositions.Remove(entity);
+         buckets[lastpos.Item1, lastpos.Item2].Remove(entity);
+         lastPositions.Remove(entity);*/
 
 
+        // Verifica si la entidad está en las posiciones conocidas
+        if (lastPositions.TryGetValue(entity, out var lastpos))
+        {
+            // Verifica si la posición está dentro de la grilla
+            if (IsInsideGrid(lastpos))
+            {
+                // Intenta eliminar la entidad de la celda correspondiente
+                buckets[lastpos.Item1, lastpos.Item2].Remove(entity);
+            }
 
+            // Elimina la entidad del diccionario de últimas posiciones
+            lastPositions.Remove(entity);
+        }
     }
     public void UpdateEntity(GridEntity entity)
     {

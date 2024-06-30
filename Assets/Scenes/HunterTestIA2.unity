@@ -1483,7 +1483,7 @@ MonoBehaviour:
   _desired: {x: 0, y: 0, z: 0}
   MaxEnergy: 1
   MinEnergy: 0
-  DecreaseSpeedOfEnergy: 0.05
+  DecreaseSpeedOfEnergy: 0.005
   TimeTakenForRecoveryEnergyValue: 0
   _player: {fileID: 0}
   _viewRadius: 0
@@ -2221,6 +2221,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5466107377031510920, guid: 8876604c922223e4a9f1baecb35d89ad, type: 3}
   m_PrefabInstance: {fileID: 2007809927}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1434958652 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5996348942955352532, guid: 8876604c922223e4a9f1baecb35d89ad, type: 3}
+  m_PrefabInstance: {fileID: 2007809927}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1434958649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c088291d8aa861d458d590a2b31b55c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1457356127
 GameObject:
   m_ObjectHideFlags: 0
@@ -2743,7 +2754,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5466107377031510920, guid: 8876604c922223e4a9f1baecb35d89ad, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 4.4
       objectReference: {fileID: 0}
     - target: {fileID: 5466107377031510920, guid: 8876604c922223e4a9f1baecb35d89ad, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2751,7 +2762,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5466107377031510920, guid: 8876604c922223e4a9f1baecb35d89ad, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -25.9
       objectReference: {fileID: 0}
     - target: {fileID: 5466107377031510920, guid: 8876604c922223e4a9f1baecb35d89ad, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2798,6 +2809,14 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5996348942955352532, guid: 8876604c922223e4a9f1baecb35d89ad, type: 3}
+      propertyPath: fleeTargetGO
+      value: 
+      objectReference: {fileID: 1434958649}
+    - target: {fileID: 5996348942955352532, guid: 8876604c922223e4a9f1baecb35d89ad, type: 3}
+      propertyPath: seekTargetGO
+      value: 
+      objectReference: {fileID: 1434958649}
+    - target: {fileID: 5996348942955352532, guid: 8876604c922223e4a9f1baecb35d89ad, type: 3}
       propertyPath: _cohesionWeight
       value: 2
       objectReference: {fileID: 0}
@@ -2829,6 +2848,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7243294377412387914, guid: 8876604c922223e4a9f1baecb35d89ad, type: 3}
+      propertyPath: agentScript
+      value: 
+      objectReference: {fileID: 1434958652}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8876604c922223e4a9f1baecb35d89ad, type: 3}
 --- !u!1 &2072296268
@@ -2868,6 +2891,7 @@ MonoBehaviour:
   height: 20
   prefab: {fileID: 1434958649}
   instances: []
+  boolForSpawningBoidsAfterAwake: 0
   AreGizmosShutDown: 1
   activatedGrid: 1
   showLogs: 1

@@ -245,7 +245,7 @@ public class HunterIA2 : MonoBehaviour
     #region Chase/Moving State General
 
     #region Funciones de Físicas de Chase
-    private void seek()
+    private void SeekOfHunter()
     {
         _desired.Normalize();
         _desired *= _maxSpeed;
@@ -321,7 +321,7 @@ public class HunterIA2 : MonoBehaviour
     public void ThisStateUpdateMoving()
     {
         ObstacleAvoidanceMoving();
-        seek();
+        SeekOfHunter();
 
         HunterTransform.position += _velocity * Time.deltaTime;
         //para que mire al objetivo
