@@ -1841,6 +1841,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   velocity: {x: 0, y: 0, z: 0}
   onGrid: 0
+  _rend: {fileID: 0}
   agentScript: {fileID: 0}
 --- !u!135 &1316061886
 SphereCollider:
@@ -2232,6 +2233,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c088291d8aa861d458d590a2b31b55c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!23 &1434958655 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 6610576611996381539, guid: 8876604c922223e4a9f1baecb35d89ad, type: 3}
+  m_PrefabInstance: {fileID: 2007809927}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1457356127
 GameObject:
   m_ObjectHideFlags: 0
@@ -2848,6 +2854,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7243294377412387914, guid: 8876604c922223e4a9f1baecb35d89ad, type: 3}
+      propertyPath: _rend
+      value: 
+      objectReference: {fileID: 1434958655}
     - target: {fileID: 7243294377412387914, guid: 8876604c922223e4a9f1baecb35d89ad, type: 3}
       propertyPath: agentScript
       value: 

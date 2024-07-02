@@ -27,21 +27,21 @@ public class Boid : SteeringAgent
 
     private void Awake()
     {
-        targetGrid = GetComponentInParent<SpatialGrid>();
+        //targetGrid = GetComponentInParent<SpatialGrid>();
     }
     private void OnEnable()
     {
-        targetGrid = GetComponentInParent<SpatialGrid>();
+       /* targetGrid = GetComponentInParent<SpatialGrid>();
         seekTargetGO = GameObject.FindGameObjectWithTag("SeekTarget");
         fleeTargetGO = GameObject.FindGameObjectWithTag("Hunter");
         _seekTarget = seekTargetGO.transform;
         _fleeTarget = fleeTargetGO.transform;
         if (targetGrid == null)
-            targetGrid = GetComponentInParent<SpatialGrid>();
+            targetGrid = GetComponentInParent<SpatialGrid>();*/
     }
     private void Start()
     {
-        targetGrid = GetComponentInParent<SpatialGrid>();
+        //targetGrid = GetComponentInParent<SpatialGrid>();
 
         float x = Random.Range(-1f, 1f);
         float z = Random.Range(-1f, 1f);
@@ -54,7 +54,7 @@ public class Boid : SteeringAgent
     }
     public void SeekForNullReferences()
     {
-        if (seekTargetGO == null || fleeTargetGO == null || targetGrid == null || _seekTarget == null || _fleeTarget == null)
+       /* if (seekTargetGO == null || fleeTargetGO == null || targetGrid == null || _seekTarget == null || _fleeTarget == null)
         {
             targetGrid = GetComponentInParent<SpatialGrid>();
             seekTargetGO = GameObject.FindGameObjectWithTag("SeekTarget");
@@ -62,7 +62,7 @@ public class Boid : SteeringAgent
             _seekTarget = seekTargetGO.transform;
             _fleeTarget = fleeTargetGO.transform;
 
-        }
+        }*/
     }
     public IEnumerable<GridEntity> Query()
     {
@@ -104,7 +104,7 @@ public class Boid : SteeringAgent
         }
 
         Flocking();
-        SeekForNullReferences();
+        //SeekForNullReferences();
     }
 
     private void Flocking()//REEMPLAZAR POR LA BUSQUEDA CON QUERY 
